@@ -1,0 +1,74 @@
+﻿
+#include "InventoryManagement/FastArray/Inv_FastArray.h"
+
+#include "InventoryManagement/Components/Inv_InventoryComponent.h"
+#include "Items/Inv_InventoryItem.h"
+#include "Tests/ToolMenusTestUtilities.h"
+
+TArray<UInv_InventoryItem*> FInv_InventoryFastArray::GetAllInventoryItems() const
+{
+	TArray<UInv_InventoryItem*> Results;
+	Results.Reserve(Entries.Num());
+	for (const auto& Entry : Entries)
+	{
+		if (!IsValid(Entry.Item)) continue;
+		Results.Add(Entry.Item);
+	}
+	return Results;
+}
+
+void FInv_InventoryFastArray::PreReplicatedRemove(const TArrayView<int32> RemovedIndices, int32 FinalSize)
+{
+	UInv_InventoryComponent* IC = Cast<UInv_InventoryComponent>(OwnerComponent);
+	if (!IsValid(IC)) return;
+
+	for (const int32 Index : RemovedIndices)
+	{
+		IC->OnInventoryItemRemoved.Broadcast(Entries[Index].Item);
+	}
+}
+
+void FInv_InventoryFastArray::PostReplicatedAdd(const TArrayView<int32> AddedIndices, int32 FinalSize)
+{
+	UInv_InventoryComponent* IC = Cast<UInv_InventoryComponent>(OwnerComponent);
+	if (!IsValid(IC)) return;
+
+	for (const int32 Index : AddedIndices)
+	{
+		IC->OnInventoryItemRemoved.Broadcast(Entries[Index].Item);
+	}
+}
+
+UInv_InventoryItem* FInv_InventoryFastArray::AddEntry(UInv_ItemComponent* ItemComponent)
+{
+	//TODO: Implement once item component is more complete
+	return nullptr;
+}
+
+UInv_InventoryItem* FInv_InventoryFastArray::AddEntry(UInv_InventoryItem* InventoryItem)
+{
+	check(OwnerComponent);
+	AActor* OwningActor = OwnerComponent->GetOwner();
+	check(OwningActor->HasAuthority());
+
+	FInv_InventoryEntry& NewEntry = Entries.AddDefaulted_GetRef();
+	NewEntry.Item = InventoryItem;
+	
+	MarkItemDirty(NewEntry);
+
+	return InventoryItem;
+}
+
+void FInv_InventoryFastArray::RemoveEntry(UInv_InventoryItem* InventoryItem)
+{
+	for (auto EntryIt = Entries.CreateIterator(); EntryIt; ++EntryIt)
+	{
+		FInv_InventoryEntry& Entry = *EntryIt; //dereference the iterator
+		if (Entry.Item == InventoryItem)
+		{
+			EntryIt.RemoveCurrent(); //removes it and clears the iterator
+			
+			MarkArrayDirty();
+		}
+	}
+}

@@ -38,7 +38,7 @@ void AInGamePlayerController::BeginPlay()
 
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 
-	check(Subsystem);
+	if (!IsValid(Subsystem)) return;
 	
 	for (const auto& MappingContext : DefaultIMCs)
 	{
@@ -53,9 +53,7 @@ void AInGamePlayerController::BeginPlay()
 void AInGamePlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-
-	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-
+	
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
 	{
 		EnhancedInputComponent->BindAction(PrimaryInteractAction,ETriggerEvent::Started, this, &ThisClass::OnInteractActionStarted);
@@ -89,7 +87,7 @@ void AInGamePlayerController::OnInteractActionStarted()
 void AInGamePlayerController::TraceForItem()
 {
 	
-	if (!IsValid(GEngine)) return;
+	if (!IsValid(GEngine) || !IsValid(GEngine->GameViewport)) return;
 
 	FVector2D ViewportSize;
 	GEngine->GameViewport->GetViewportSize(ViewportSize);

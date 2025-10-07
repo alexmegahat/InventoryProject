@@ -30,7 +30,9 @@ public class Inventory : ModuleRules
 				"UMG",
 				"Slate",
 				"SlateCore", 
-				"NetCore"
+				"NetCore",
+				"StructUtils",
+				"GameplayTags"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

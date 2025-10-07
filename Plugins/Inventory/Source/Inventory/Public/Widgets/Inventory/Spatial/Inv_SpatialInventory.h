@@ -20,7 +20,10 @@ public:
 	//~Begin UUserWidget Interface
 	virtual void NativeOnInitialized() override;
 	//~End UUserWidget Interface
-	
+
+	//~Begin UInv_InventoryBase Interface
+	virtual FInv_SlotAvailabilityResult HasRoomForItem(UInv_ItemComponent* ItemComponent) const override;
+	//~End UInv_InventoryBase Interface
 private:
 	
 	//******* Bound Widgets *******//

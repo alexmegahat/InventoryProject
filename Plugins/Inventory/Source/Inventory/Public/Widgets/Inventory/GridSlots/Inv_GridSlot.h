@@ -8,6 +8,15 @@
 
 class UImage;
 
+UENUM(BlueprintType)
+enum class EInv_GridSlotState : uint8
+{
+	Unoccupied,
+	Occupied,
+	Selected,
+	GrayedOut
+};
+
 /**
  * 
  */
@@ -19,6 +28,9 @@ public:
 	void SetTileIndex(int32 InNewIndex) {TileIndex = InNewIndex;}
 	int32 GetTileIndex() const {return TileIndex;}
 
+	EInv_GridSlotState GetGridSlotState() const { return GridSlotState; };
+	void SetGridSlotState(const EInv_GridSlotState InNewState);
+
 private:
 	int32 TileIndex;
 	
@@ -29,5 +41,10 @@ private:
 	
 	//******* Bound Widgets *******//
 
+	UPROPERTY(EditDefaultsOnly, Category="Style")
+	TMap<EInv_GridSlotState, FSlateBrush> StateBrushes;
+	
+	//current grid slot state
+	EInv_GridSlotState GridSlotState;
 	
 };

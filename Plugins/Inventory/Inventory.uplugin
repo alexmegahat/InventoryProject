@@ -26,7 +26,10 @@
 				"Slate",
 				"SlateCore",
 				"CommonInput",
-				"EnhancedInput"
+				"EnhancedInput",
+				"NetCore",
+				"StructUtils",
+				"GameplayTags"
 			]
 		}
 	]

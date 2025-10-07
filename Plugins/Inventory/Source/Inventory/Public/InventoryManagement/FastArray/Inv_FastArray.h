@@ -41,7 +41,11 @@ public:
 	TArray<UInv_InventoryItem*> GetAllInventoryItems() const;
 
 	//~Begin FFastArraySerializer contract
+	
+	//Automatically called on the client when the item has been removed
 	void PreReplicatedRemove(const TArrayView<int32> RemovedIndices, int32 FinalSize);
+
+	//Automatically called on the client when the new item has been added
 	void PostReplicatedAdd(const TArrayView<int32> AddedIndices, int32 FinalSize);
 
 	bool NetDeltaSerialize(FNetDeltaSerializeInfo& DeltaParams)

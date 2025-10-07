@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "InventoryManagement/FastArray/Inv_FastArray.h"
 #include "Inv_InventoryComponent.generated.h"
 
 
@@ -21,11 +22,24 @@ class INVENTORY_API UInv_InventoryComponent : public UActorComponent
 
 public:
 	UInv_InventoryComponent();
-
+	
+	//~Begin ActorComponent Interface
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	//~End ActorComponent Interface
+	
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category="Inventory")
 	void TryAddItem(UInv_ItemComponent* ItemComponent);
 
+	UFUNCTION(Server, Reliable) //reliable - guaranteed to hit the server
+	void Server_AddNewItem(UInv_ItemComponent* ItemComponent, int32 StackCount);
+
+	UFUNCTION(Server, Reliable) //reliable - guaranteed to hit the server
+	void Server_AddStacksToItem(UInv_ItemComponent* ItemComponent, int32 StackCount, int32 Remainder);
+
 	void ToggleInventoryMenu();
+	
+	//presents a method to replicate objects on some actor or actor component
+	void AddRepSubObj(UObject* SubObj);
 
 	FInventoryItemChange OnInventoryItemAdded;
 	FInventoryItemChange OnInventoryItemRemoved;
@@ -40,6 +54,9 @@ private:
 	TWeakObjectPtr<APlayerController> OwningPlayerController;
 	
 	void ConstructInventory();
+
+	UPROPERTY(Replicated)
+	FInv_InventoryFastArray InventoryList;
 
 	UPROPERTY()
 	TObjectPtr<UInv_InventoryBase> InventoryMenu;

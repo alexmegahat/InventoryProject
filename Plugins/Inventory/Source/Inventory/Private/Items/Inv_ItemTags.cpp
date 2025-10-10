@@ -14,6 +14,10 @@ namespace GameItems
 		}
 		namespace Head
 		{
+			
+		}
+		namespace Face
+		{
 			UE_DEFINE_GAMEPLAY_TAG(SteelMask, "GameItems.Equipment.Head.SteelMask")
 		}
 		namespace Chest

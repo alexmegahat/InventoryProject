@@ -61,6 +61,7 @@ private:
 	UPROPERTY(Replicated)
 	FInv_InventoryFastArray InventoryList;
 
+	//Widget created in Construct Inventory
 	UPROPERTY()
 	TObjectPtr<UInv_InventoryBase> InventoryMenu;
 

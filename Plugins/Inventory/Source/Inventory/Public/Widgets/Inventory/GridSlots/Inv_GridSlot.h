@@ -42,12 +42,12 @@ public:
 	void SetInventoryItem(UInv_InventoryItem* Item);
 
 private:
-	int32 TileIndex;
-	int32 StackCount;
+	int32 TileIndex{INDEX_NONE};
+	int32 StackCount{0};
 	int32 UpperLeftIndex{INDEX_NONE};
 	TWeakObjectPtr<UInv_InventoryItem> InventoryItem;
 
-	bool bIsAvailable;
+	bool bIsAvailable{true};
 
 	UPROPERTY(EditDefaultsOnly, Category="Style")
 	TMap<EInv_GridSlotState, FSlateBrush> StateBrushes;

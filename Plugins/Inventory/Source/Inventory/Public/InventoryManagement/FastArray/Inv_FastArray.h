@@ -22,6 +22,7 @@ public:
 	FInv_InventoryEntry() {}
 
 private:
+	//friend means that the structs declared as friends can access private vars of this.
 	friend struct FInv_InventoryFastArray;
 	friend UInv_InventoryComponent;
 	

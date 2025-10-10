@@ -13,8 +13,12 @@ namespace GameItems
 		}
 		namespace Head
 		{
-			UE_DECLARE_GAMEPLAY_TAG_EXTERN(SteelMask)
+			
 		}
+		namespace Face
+        {
+        	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SteelMask)
+        }
 		namespace Chest
 		{
 			
@@ -23,7 +27,7 @@ namespace GameItems
 		{
 			
 		}
-		namespace Foot
+		namespace Feet
 		{
 			
 		}

@@ -8,7 +8,8 @@
 
 class UInv_InfoMessage;
 /**
- * 
+* Contains HUD and methods for showing
+* player additional UI info
  */
 UCLASS()
 class INVENTORY_API UInv_HUDWidget : public UUserWidget

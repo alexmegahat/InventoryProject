@@ -7,6 +7,7 @@
 #include "Types/Inv_GridTypes.h"
 #include "Inv_InventoryGrid.generated.h"
 
+enum class EInv_GridSlotState : uint8;
 class UInv_HoverItem;
 struct FGameplayTag;
 struct FInv_ImageFragment;
@@ -17,6 +18,7 @@ class UInv_ItemComponent;
 class UInv_InventoryComponent;
 class UCanvasPanel;
 class UInv_GridSlot;
+
 /**
  * 
  */
@@ -27,7 +29,23 @@ class INVENTORY_API UInv_InventoryGrid : public UUserWidget
 public:
 	//~Begin UUserWidget Interface
 	virtual void NativeOnInitialized() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
 	//~End UUserWidget Interface
+
+	bool CursorExitedCanvas(const FVector2D& CanvasPosition, const FVector2D& BoundarySize, const FVector2D& Location);
+	void HighlightSlots(const int32 Index, const FIntPoint& Dimensions);
+	void UnHighlightSlots(const int32 Index, const FIntPoint& Dimensions);
+	void ChangeHoverType(const int32 Index, const FIntPoint& Dimensions, EInv_GridSlotState GridSlotState);
+	
+	//update TileParameters and LastTileParameters
+	void UpdateTileParameters(const FVector2D CanvasPosition, const FVector2D MousePosition);
+	//determines what is actually happening when tile params are updated (change slots hover state, etc.)
+	//concerned only with the situation when we have a hover item to highlight the range of grid slots this item can take
+	//is NOT concerned with highlighting just one grid slot when we hover our mouse over it
+	void OnTileParametersUpdated(FInv_TileParameters& Parameters);
+	//Calculate starting coordinate for highlighting
+	FIntPoint CalculateStartingCoordinate(const FIntPoint& Coordinate, const FIntPoint Dimensions, const EInv_TileQuadrant Quadrant) const;
+	FInv_SpaceQueryResult CheckHoverPosition(const FIntPoint& Position, const FIntPoint& Dimensions);
 
 	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_ItemComponent* ItemComponent);
 	
@@ -122,19 +140,18 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	TSubclassOf<UInv_GridSlot> GridSlotClass;
 
+	//These store information about the position of the mouse within the grid
+	//(Specific slot, specific position within this slot)
+	//These are constantly changing in NativeTick func
+	FInv_TileParameters TileParameters;
+	FInv_TileParameters LastTileParameters;
+
 	//******* Bound Widgets *******//
+	
+	//where the grid slots are located
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCanvasPanel> CanvasPanel;
 	//******* Bound Widgets *******//
-	
-	UPROPERTY(EditAnywhere, Category = "Inventory")
-	TSubclassOf<UInv_SlottedItem> SlottedItemClass;
-
-	UPROPERTY()
-	TObjectPtr<UInv_HoverItem> HoverItem;
-
-	UPROPERTY(EditAnywhere, Category = "Inventory")
-	TSubclassOf<UInv_HoverItem> HoverItemClass;
 
 	//inventory items widgets
 	//index will help us to move, remove things, etc.
@@ -142,9 +159,29 @@ private:
 	TMap<int32, TObjectPtr<UInv_SlottedItem>> SlottedItems;
 	
 	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TSubclassOf<UInv_SlottedItem> SlottedItemClass;
+
+	UPROPERTY()
+	TObjectPtr<UInv_HoverItem> HoverItem;
+	
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TSubclassOf<UInv_HoverItem> HoverItemClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Inventory")
 	int32 Rows;
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	int32 Columns;
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	float TileSize;
+
+	// Index were an item would be placed if we click at the valid location
+	int32 ItemDropIndex = INDEX_NONE;
+	FInv_SpaceQueryResult CurrentSpaceQueryResult;
+
+	bool bMouseWithinCanvas;
+	bool bLastMouseWithinCanvas;
+
+	int32 LastHighlightedGridIndex;
+	FIntPoint LastHighlightedDimensions;
 };

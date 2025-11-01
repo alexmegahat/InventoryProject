@@ -164,6 +164,21 @@ void UInv_InventoryGrid::SwapStackCounts(const int32 ClickedStackCount, const in
 	HoverItem->UpdateStackCount(ClickedStackCount);
 }
 
+void UInv_InventoryGrid::ConsumeHoverItemStacks(const int32 ClickedStackCount, const int32 HoveredStackCount,
+	const int32 Index)
+{
+	const int32 AmountToTransfer = HoveredStackCount;
+	const int32 NewClickedStackCount = ClickedStackCount + AmountToTransfer;
+
+	GridSlots[Index]->SetStackCount(NewClickedStackCount);
+	SlottedItems.FindChecked(Index)->UpdateStackCountText(NewClickedStackCount);
+	ClearHoverItem();
+	
+	const FInv_GridFragment* GridFragment = GridSlots[Index]->GetInventoryItem()->GetItemManifest().GetFragmentOfType<FInv_GridFragment>();
+	const FIntPoint Dimensions = GridFragment ? GridFragment->GetGridSize() : FIntPoint(1, 1);
+	HighlightSlots(Index, Dimensions);
+}
+
 void UInv_InventoryGrid::SetMouseCursorWidgetByVisibilityType(const EInv_MouseCursorVisibilityType& MouseCursor)
 {
 	// Use Find to safely access widget class
@@ -739,7 +754,13 @@ void UInv_InventoryGrid::OnSlottedItemClicked(int32 GridIndex, const FPointerEve
 			SwapStackCounts(ClickedStackCount, HoveredStackCount, GridIndex);
 		}
 		
-		//Should consume hover item's stacks?
+		//Should consume hover item's stacks? (Room in the clicked slot >= HoverStackCount)
+		if (RoomInClickedSlot >= HoveredStackCount)
+		{
+			//Consume hover item's stacks
+			ConsumeHoverItemStacks(ClickedStackCount, HoveredStackCount, GridIndex);
+		}
+		
 		//Should fill in the stacks of the clicked item? (and not consume hover item?)
 		//Is there no room in the clicked slot?
 		return;

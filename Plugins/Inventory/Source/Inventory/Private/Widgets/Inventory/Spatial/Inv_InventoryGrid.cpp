@@ -721,18 +721,55 @@ void UInv_InventoryGrid::ConstructGrid()
 			UInv_GridSlot* GridSlot = CreateWidget<UInv_GridSlot>(this, GridSlotClass);
 			
 			CanvasPanel->AddChildToCanvas(GridSlot);
-
+			
 			//get index in the array, corresponding to 2D coords i and j
 			const FIntPoint Pos = FIntPoint(i, j);
 			int32 Index = UInv_WidgetUtils::GetIndexFromPosition(Pos, Columns);
 			GridSlot->SetTileIndex(Index);
-
+			
 			UCanvasPanelSlot* GridCanvasPanelSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(GridSlot);
 			GridCanvasPanelSlot->SetSize(FVector2D(TileSize));
 			GridCanvasPanelSlot->SetPosition(Pos * TileSize);
-
+			
 			GridSlots.Add(GridSlot);
+			
+			GridSlot->OnGridSlotClicked.AddDynamic(this, &UInv_InventoryGrid::OnGridSlotClicked);
+			GridSlot->OnGridSlotHovered.AddDynamic(this, &UInv_InventoryGrid::OnGridSlotHovered);
+			GridSlot->OnGridSlotUnhovered.AddDynamic(this, &UInv_InventoryGrid::OnGridSlotUnhovered);
 		}
+	}
+}
+
+void UInv_InventoryGrid::OnGridSlotClicked(int32 GridIndex, const FPointerEvent& MouseEvent)
+{
+	//if we're not holding a hover item - return
+	if (!IsValid(HoverItem)) return;
+	
+	if (!GridSlots.IsValidIndex(ItemDropIndex)) return;
+
+	
+	
+}
+
+void UInv_InventoryGrid::OnGridSlotHovered(int32 GridIndex, const FPointerEvent& MouseEvent)
+{
+	if (IsValid(HoverItem)) return;
+
+	UInv_GridSlot* GridSlot = GridSlots[GridIndex];
+	if (GridSlot->GetbIsAvailable())
+	{
+		GridSlot->SetGridSlotState(EInv_GridSlotState::Occupied);
+	}
+}
+
+void UInv_InventoryGrid::OnGridSlotUnhovered(int32 GridIndex, const FPointerEvent& MouseEvent)
+{
+	if (IsValid(HoverItem)) return;
+
+	UInv_GridSlot* GridSlot = GridSlots[GridIndex];
+	if (GridSlot->GetbIsAvailable())
+	{
+		GridSlot->SetGridSlotState(EInv_GridSlotState::Unoccupied);
 	}
 }
 

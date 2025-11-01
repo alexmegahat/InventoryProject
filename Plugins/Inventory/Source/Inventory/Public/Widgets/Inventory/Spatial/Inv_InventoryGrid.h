@@ -55,6 +55,7 @@ public:
 	void AddItem(UInv_InventoryItem* Item);
 	
 private:
+	//This function creates grid slots widgets, binds callbacks for on grid slot hover, unhover and click events, places slots widgets inside the array and draws them on screen
 	void ConstructGrid();
 	
 	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_InventoryItem* Item);
@@ -120,6 +121,15 @@ private:
 
 	UFUNCTION()
 	void OnSlottedItemClicked(int32 GridIndex, const FPointerEvent& MouseEvent);
+
+	UFUNCTION()
+	void OnGridSlotClicked(int32 GridIndex, const FPointerEvent& MouseEvent);
+
+	UFUNCTION()
+	void OnGridSlotHovered(int32 GridIndex, const FPointerEvent& MouseEvent);
+
+	UFUNCTION()
+	void OnGridSlotUnhovered(int32 GridIndex, const FPointerEvent& MouseEvent);
 	
 	bool IsLeftMouseClick(const FPointerEvent& MouseEvent) const;
 	bool IsRightMouseClick(const FPointerEvent& MouseEvent) const;
@@ -177,6 +187,9 @@ private:
 
 	// Index were an item would be placed if we click at the valid location
 	int32 ItemDropIndex = INDEX_NONE;
+
+	//CurrentSpaceQueryResult is updated as we move our mouse around, performing queries to see if it is hovering over a location
+	//where if we clicked there would be a place valid for placing an item or swapping with it
 	FInv_SpaceQueryResult CurrentSpaceQueryResult;
 
 	bool bMouseWithinCanvas;

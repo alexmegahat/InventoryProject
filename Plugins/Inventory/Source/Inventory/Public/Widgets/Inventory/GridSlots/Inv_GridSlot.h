@@ -14,6 +14,8 @@
 class UInv_InventoryItem;
 class UImage;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGridSlotEvent, int32, GridIndex, const FPointerEvent&, MouseEvent);
+
 UENUM(BlueprintType)
 enum class EInv_GridSlotState : uint8
 {
@@ -31,6 +33,15 @@ class INVENTORY_API UInv_GridSlot : public UUserWidget
 {
 	GENERATED_BODY()
 public:
+	
+	//~Begin UUserWidget Interface
+	//Override a set of functions that are called on mouse click, hover and unhover events (https://www.udemy.com/course/unreal-engine-5-inventory-systems/learn/lecture/50371187#notes)
+	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override;
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	//~End UUserWidget Interface
+	
+	
 	DATA_ACCESSOR(int32, TileIndex);
 	DATA_ACCESSOR(int32, StackCount);
 	DATA_ACCESSOR(int32, UpperLeftIndex);
@@ -40,6 +51,10 @@ public:
 	
 	TWeakObjectPtr<UInv_InventoryItem> GetInventoryItem() const { return InventoryItem; }
 	void SetInventoryItem(UInv_InventoryItem* Item);
+
+	FGridSlotEvent OnGridSlotClicked;
+	FGridSlotEvent OnGridSlotHovered;
+	FGridSlotEvent OnGridSlotUnhovered;
 
 private:
 	int32 TileIndex{INDEX_NONE};

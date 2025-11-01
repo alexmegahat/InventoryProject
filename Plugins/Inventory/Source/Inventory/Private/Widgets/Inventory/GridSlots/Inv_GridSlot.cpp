@@ -6,6 +6,27 @@
 #include "IAutomationReport.h"
 #include "Components/Image.h"
 
+void UInv_GridSlot::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseEnter(InGeometry, InMouseEvent);
+
+	OnGridSlotHovered.Broadcast(TileIndex, InMouseEvent);
+}
+
+void UInv_GridSlot::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseLeave(InMouseEvent);
+
+	OnGridSlotUnhovered.Broadcast(TileIndex, InMouseEvent);
+}
+
+FReply UInv_GridSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	OnGridSlotClicked.Broadcast(TileIndex, InMouseEvent);
+	
+	return FReply::Handled();
+}
+
 void UInv_GridSlot::SetGridSlotState(const EInv_GridSlotState InNewState)
 {
 	GridSlotState = InNewState;

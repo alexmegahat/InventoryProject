@@ -123,6 +123,29 @@ void UInv_InventoryGrid::ClearHoverItem()
 	SetMouseCursorWidgetByVisibilityType(EInv_MouseCursorVisibilityType::Visible);
 }
 
+bool UInv_InventoryGrid::IsSameStackable(const UInv_InventoryItem* ClickedInventoryItem) const
+{
+	const bool bIsSameItem = ClickedInventoryItem == HoverItem->GetInventoryItem();
+	const bool bIsStackable = ClickedInventoryItem->IsStackable();
+	return bIsSameItem && bIsStackable;
+}
+
+void UInv_InventoryGrid::SwapWithHoverItem(UInv_InventoryItem* ClickedInventoryItem, const int32 GridIndex)
+{
+	if(!IsValid(HoverItem)) return;
+
+	UInv_InventoryItem* TempInventoryItem = HoverItem->GetInventoryItem();
+	const int32 TempStackCount = HoverItem->GetStackCount();
+	const bool bTempIsStackable = HoverItem->IsStackable();
+
+	//Keep the same prev grid index
+
+	AssignHoverItem(ClickedInventoryItem, GridIndex,HoverItem->GetGridIndex());
+	RemoveItemFromGrid(ClickedInventoryItem, GridIndex);
+	AddItemAtIndex(TempInventoryItem, ItemDropIndex, bTempIsStackable, TempStackCount);
+	UpdateGridSlots(TempInventoryItem, ItemDropIndex, bTempIsStackable, TempStackCount);
+}
+
 void UInv_InventoryGrid::SetMouseCursorWidgetByVisibilityType(const EInv_MouseCursorVisibilityType& MouseCursor)
 {
 	// Use Find to safely access widget class
@@ -679,7 +702,21 @@ void UInv_InventoryGrid::OnSlottedItemClicked(int32 GridIndex, const FPointerEve
 	if (!IsValid(HoverItem) && IsLeftMouseClick(MouseEvent))
 	{
 		PickUp(ClickedInventoryItem, GridIndex);
+		return;
 	}
+
+	//Do the hovered item and the clicked inventory item share a type, and are they stackable?
+	if (IsSameStackable(ClickedInventoryItem))
+	{
+		//Should swap stack counts?
+		//Should consume hover item's stacks?
+		//Should fill in the stacks of the clicked item? (and not consume hover item?)
+		//Is there no room in the clicked slot?
+		return;
+	}
+		
+	//Swap with the hover item.
+	SwapWithHoverItem(ClickedInventoryItem, GridIndex);
 }
 
 bool UInv_InventoryGrid::IsLeftMouseClick(const FPointerEvent& MouseEvent) const

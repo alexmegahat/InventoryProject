@@ -54,6 +54,10 @@ void UInv_SpatialInventory::ShowConsumables()
 
 void UInv_SpatialInventory::SetActiveGrid(UInv_InventoryGrid* Grid, UButton* DisableButton)
 {
+	if (ActiveGrid.IsValid()) ActiveGrid->SetMouseCursorWidgetByVisibilityType(EInv_MouseCursorVisibilityType::Hidden);
+	ActiveGrid = Grid;
+	if (ActiveGrid.IsValid()) ActiveGrid->SetMouseCursorWidgetByVisibilityType(EInv_MouseCursorVisibilityType::Visible);
+	
 	Button_Equippables->SetIsEnabled(true);
 	Button_Craftables->SetIsEnabled(true);
 	Button_Consumables->SetIsEnabled(true);

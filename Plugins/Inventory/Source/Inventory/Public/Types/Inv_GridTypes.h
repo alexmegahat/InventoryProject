@@ -13,6 +13,13 @@ enum class EInv_ItemCategory : uint8
 	None
 };
 
+UENUM(BlueprintType)
+enum class EInv_MouseCursorVisibilityType : uint8
+{
+	Visible,
+	Hidden,
+};
+
 USTRUCT()
 struct FInv_SlotAvailability
 {
@@ -96,3 +103,5 @@ struct FInv_SpaceQueryResult
 	// Upper left index of the single valid item, if there is one
 	int32 UpperLeftIndex{INDEX_NONE};
 };
+
+

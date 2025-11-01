@@ -12,8 +12,9 @@ void UInv_HoverItem::SetImageBrush(FSlateBrush& ImageBrush) const
 	Image_Icon->SetBrush(ImageBrush);
 }
 
-void UInv_HoverItem::UpdateStackCount(const int32 Count) const
+void UInv_HoverItem::UpdateStackCount(const int32 Count)
 {
+	StackCount = Count;
 	if (Count > 0)
 	{
 		Text_StackCount->SetVisibility(ESlateVisibility::Visible);

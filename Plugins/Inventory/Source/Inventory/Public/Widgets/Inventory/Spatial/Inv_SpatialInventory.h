@@ -56,5 +56,7 @@ private:
 	UFUNCTION()
 	void ShowConsumables();
 
+	TWeakObjectPtr<UInv_InventoryGrid> ActiveGrid;
+
 	void SetActiveGrid(UInv_InventoryGrid* Grid, UButton* DisableButton);
 };

@@ -22,7 +22,7 @@ class INVENTORY_API UInv_HoverItem : public UUserWidget
 
 public:
 	void SetImageBrush(FSlateBrush& ImageBrush) const;
-	void UpdateStackCount(const int32 Count) const;
+	void UpdateStackCount(const int32 Count);
 
 	FGameplayTag GetItemType() const;
 	int32 GetStackCount() const {return StackCount;};

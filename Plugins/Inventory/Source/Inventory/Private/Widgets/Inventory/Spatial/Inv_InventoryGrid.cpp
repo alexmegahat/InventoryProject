@@ -119,7 +119,39 @@ void UInv_InventoryGrid::ClearHoverItem()
 	HoverItem->RemoveFromParent();
 	HoverItem = nullptr;
 
-	//TODO: Show mouse cursor
+	//Show mouse cursor
+	SetMouseCursorWidgetByVisibilityType(EInv_MouseCursorVisibilityType::Visible);
+}
+
+void UInv_InventoryGrid::SetMouseCursorWidgetByVisibilityType(const EInv_MouseCursorVisibilityType& MouseCursor)
+{
+	// Use Find to safely access widget class
+	TSubclassOf<UUserWidget>* WidgetClassPtr = MouseCursorWidgetClassMap.Find(MouseCursor);
+	APlayerController* OwningPlayer = GetOwningPlayer();
+ 
+	if (!WidgetClassPtr || !IsValid(*WidgetClassPtr) || !IsValid(OwningPlayer))
+	{
+		return; // Early out if missing class or player
+	}
+ 
+	// Safely find existing widget
+	UUserWidget** WidgetPtr = MouseCursorWidgetMap.Find(MouseCursor);
+	if (!WidgetPtr || !IsValid(*WidgetPtr))
+	{
+		// Create widget and add to map only if it doesn't exist or is invalid
+		UUserWidget* NewWidget = CreateWidget<UUserWidget>(OwningPlayer, *WidgetClassPtr);
+		if (IsValid(NewWidget))
+		{
+			MouseCursorWidgetMap.Add(MouseCursor, NewWidget);
+			WidgetPtr = MouseCursorWidgetMap.Find(MouseCursor);
+		}
+	}
+ 
+	// Set mouse cursor widget safely
+	if (WidgetPtr && IsValid(*WidgetPtr))
+	{
+		OwningPlayer->SetMouseCursorWidget(EMouseCursor::Default, *WidgetPtr);
+	}
 }
 
 void UInv_InventoryGrid::UpdateTileParameters(const FVector2D CanvasPosition, const FVector2D MousePosition)

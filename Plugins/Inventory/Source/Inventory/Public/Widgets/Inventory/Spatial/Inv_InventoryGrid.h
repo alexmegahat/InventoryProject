@@ -38,6 +38,11 @@ public:
 	void ChangeHoverType(const int32 Index, const FIntPoint& Dimensions, EInv_GridSlotState GridSlotState);
 	void ClearHoverItem();
 	
+	void SetMouseCursorWidgetByVisibilityType(const EInv_MouseCursorVisibilityType& MouseCursor);
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TMap<EInv_MouseCursorVisibilityType, TSubclassOf<UUserWidget>> MouseCursorWidgetClassMap;
+	
 	//update TileParameters and LastTileParameters
 	void UpdateTileParameters(const FVector2D CanvasPosition, const FVector2D MousePosition);
 	//determines what is actually happening when tile params are updated (change slots hover state, etc.)
@@ -56,6 +61,9 @@ public:
 	void AddItem(UInv_InventoryItem* Item);
 	
 private:
+	UPROPERTY()
+	TMap<EInv_MouseCursorVisibilityType, UUserWidget*> MouseCursorWidgetMap;
+	
 	//This function creates grid slots widgets, binds callbacks for on grid slot hover, unhover and click events, places slots widgets inside the array and draws them on screen
 	void ConstructGrid();
 	

@@ -747,7 +747,20 @@ void UInv_InventoryGrid::OnGridSlotClicked(int32 GridIndex, const FPointerEvent&
 	
 	if (!GridSlots.IsValidIndex(ItemDropIndex)) return;
 
-	
+	//if we've clicked at the location that has a slotted item
+	if (CurrentSpaceQueryResult.ValidItem.IsValid() && GridSlots.IsValidIndex(CurrentSpaceQueryResult.UpperLeftIndex))
+	{
+		//forward request to on slotted item clicked
+		OnSlottedItemClicked(CurrentSpaceQueryResult.UpperLeftIndex, MouseEvent);
+		return;
+	}
+
+	//if there is no valid item at this index
+	auto GridSlot = GridSlots[ItemDropIndex];
+	if (!GridSlot->GetInventoryItem().IsValid())
+	{
+		//TODO: Put item down at this index.
+	}
 	
 }
 

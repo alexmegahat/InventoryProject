@@ -5,6 +5,7 @@
 #include "Inv_FragmentTags.h"
 #include "Inv_ItemFragment.generated.h"
 
+class APlayerController;
 
 /*
 * Base Item Fragment (scroll down to see children)
@@ -118,4 +119,39 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	int32 StackCount{1};
 	
+};
+
+/*
+* Base Consumable Item Fragment
+*/
+USTRUCT(BlueprintType)
+struct FInv_ConsumableFragment : public FInv_ItemFragment
+{
+	GENERATED_BODY()
+public:
+	FInv_ConsumableFragment() { FragmentTag = FragmentTags::ConsumableFragment; };
+
+	virtual void OnConsume(APlayerController* PC) {};
+};
+
+USTRUCT(BlueprintType)
+struct FInv_HealthPotion : public FInv_ConsumableFragment
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	float HealAmount = 20.f;
+	
+	virtual void OnConsume(APlayerController* PC) override;
+};
+
+USTRUCT(BlueprintType)
+struct FInv_ManaPotion : public FInv_ConsumableFragment
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	float ManaAmount = 20.f;
+	
+	virtual void OnConsume(APlayerController* PC) override;
 };

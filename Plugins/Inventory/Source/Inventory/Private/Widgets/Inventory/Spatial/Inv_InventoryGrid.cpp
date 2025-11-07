@@ -332,7 +332,7 @@ FInv_SpaceQueryResult UInv_InventoryGrid::CheckHoverPosition(const FIntPoint& Po
 	FInv_SpaceQueryResult Result;
 	
 	//are the dimensions within grid bounds?
-	if (!IsInGridBounds(UInv_WidgetUtils::GetIndexFromPosition(Position, Columns), Dimensions)) return Result; //if we dont have room
+	if (!IsInGridBounds(UInv_WidgetUtils::GetIndexFromPosition(Position, Columns), Dimensions)) return Result;
 	
 	Result.bHasSpace = true;
 	
@@ -407,7 +407,7 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 	Result.bStackable = StackableFragment != nullptr;
 
 	//Determine how many items to add
-	const int32 MaxStackSize = Result.bStackable ? StackableFragment->GetMaxStackSize() : 1;
+	const int32 MaxStackSize = StackableFragment ? StackableFragment->GetMaxStackSize() : 1;
 	int32 AmountToFill = Result.bStackable ? StackableFragment->GetStackCount() : 1; //amount to fill will get smaller as we allocate space for each amount of item we're trying to add
 
 	//we can only have unique indices inside a default TSet
@@ -1051,6 +1051,7 @@ void UInv_InventoryGrid::OnGridSlotClicked(int32 GridIndex, const FPointerEvent&
 
 	//if we can place item here (not out of grid bounds) & if there is no valid item at this index
 	if (!IsInGridBounds(ItemDropIndex, HoverItem->GetGridDimensions())) return;
+	if (!CurrentSpaceQueryResult.bHasSpace) return;
 	auto GridSlot = GridSlots[ItemDropIndex];
 	if (!GridSlot->GetInventoryItem().IsValid())
 	{

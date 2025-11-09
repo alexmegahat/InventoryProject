@@ -15,7 +15,7 @@ class INVENTORY_API UInv_CompositeBase : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	FGameplayTag GetFragmentTag() {return FragmentTag;};
+	FGameplayTag GetFragmentTag() const {return FragmentTag;};
 	void SetFragmentTag(FGameplayTag tag) {FragmentTag = tag;};
 
 	virtual void Collapse() { SetVisibility(ESlateVisibility::Collapsed); };

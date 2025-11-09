@@ -581,15 +581,21 @@ void UInv_InventoryGrid::OnSlottedItemHovered(UInv_InventoryItem* Item)
 {
 	if (HasHoverItem()) return;
 
+	const auto& Manifest = Item->GetItemManifest();
+
 	UInv_ItemDescription* DescriptionWidget = GetOrCreateItemDescription();
 	DescriptionWidget->SetVisibility(ESlateVisibility::Collapsed);
 
 	GetOwningPlayer()->GetWorldTimerManager().ClearTimer(Description_Timer);
 
 	FTimerDelegate DescriptionTimerDelegate;
-	DescriptionTimerDelegate.BindLambda([this]()
+	DescriptionTimerDelegate.BindLambda([this, &Manifest, &DescriptionWidget]()
 		{
-			GetOrCreateItemDescription()->SetVisibility(ESlateVisibility::HitTestInvisible); //don't detect any mouse click hits
+			//don't detect any mouse click hits
+			GetOrCreateItemDescription()->SetVisibility(ESlateVisibility::HitTestInvisible);
+		
+			// Assimilate the manifest into the Item Description widget
+			Manifest.AssimilateInventoryFragments(DescriptionWidget);
 		}
 	);
 	

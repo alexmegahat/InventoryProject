@@ -92,7 +92,7 @@ private:
 * Image Item Fragment (for any image icon we need)
 */
 USTRUCT(BlueprintType)
-struct FInv_ImageFragment : public FInv_ItemFragment
+struct FInv_ImageFragment : public FInv_InventoryItemFragment
 {
 	GENERATED_BODY()
 public:
@@ -100,6 +100,8 @@ public:
 	FInv_ImageFragment() { FragmentTag = FragmentTags::IconFragment; }
 	
 	UTexture2D* GetIcon() const { return Icon; }
+
+	virtual void Assimilate(UInv_CompositeBase* Composite) const override;
 	
 private:
 	UPROPERTY(EditAnywhere, Category = "Inventory")
@@ -107,6 +109,28 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	FVector2D IconSize{44.f,44.f};
+	
+};
+
+/*
+* Text Item Fragment (for any text we need)
+*/
+USTRUCT(BlueprintType)
+struct FInv_TextFragment : public FInv_InventoryItemFragment
+{
+	GENERATED_BODY()
+public:
+	//default constructor for this fragment (NOT setting up tag here, done in bp)
+	FInv_TextFragment() {}
+	
+	FText GetText() const { return FragmentText; }
+	void SetText(const FText& NewText) { FragmentText = NewText; }
+
+	virtual void Assimilate(UInv_CompositeBase* Composite) const override;
+	
+private:
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	FText FragmentText;
 	
 };
 

@@ -1,17 +1,45 @@
 ﻿
 #include "Items/Fragments/Inv_ItemFragment.h"
 #include "Widgets/Composite/Inv_CompositeBase.h"
+#include "Widgets/Composite/Leafs/Inv_Leaf_Image.h"
+#include "Widgets/Composite/Leafs/Inv_Leaf_Text.h"
 
 void FInv_InventoryItemFragment::Assimilate(UInv_CompositeBase* Composite) const
 {
+	//see if the tag matches with the widget tag and if so call expand on it (see the widget)
 	if (!MatchesWidgetTag(Composite)) return;
-	
 	Composite->Expand();
 }
 
 bool FInv_InventoryItemFragment::MatchesWidgetTag(const UInv_CompositeBase* Composite) const
 {
 	return Composite->GetFragmentTag().MatchesTagExact(GetFragmentTag());
+}
+
+void FInv_ImageFragment::Assimilate(UInv_CompositeBase* Composite) const
+{
+	//see if the tag matches with the widget tag and if so call expand on it (see the widget)
+	FInv_InventoryItemFragment::Assimilate(Composite); 
+	if (!MatchesWidgetTag(Composite)) return;
+
+	if (UInv_Leaf_Image* Image = Cast<UInv_Leaf_Image>(Composite); IsValid(Image))
+	{
+		Image->SetImage(Icon);
+		Image->SetBoxSize(IconSize);
+		Image->SetImageSize(IconSize);
+	}
+	
+}
+
+void FInv_TextFragment::Assimilate(UInv_CompositeBase* Composite) const
+{
+	FInv_InventoryItemFragment::Assimilate(Composite);
+	if (!MatchesWidgetTag(Composite)) return;
+
+	if (UInv_Leaf_Text* Text = Cast<UInv_Leaf_Text>(Composite); IsValid(Text))
+	{
+		Text->SetText(FragmentText);
+	}
 }
 
 void FInv_HealthPotion::OnConsume(APlayerController* PC)

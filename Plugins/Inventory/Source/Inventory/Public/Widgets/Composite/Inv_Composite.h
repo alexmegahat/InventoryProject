@@ -24,5 +24,6 @@ public:
 	virtual void ApplyFunction(FuncType Function) override;
 	
 private:
+	UPROPERTY()
 	TArray<TObjectPtr<UInv_CompositeBase>> Children;
 };

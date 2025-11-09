@@ -589,13 +589,13 @@ void UInv_InventoryGrid::OnSlottedItemHovered(UInv_InventoryItem* Item)
 	GetOwningPlayer()->GetWorldTimerManager().ClearTimer(Description_Timer);
 
 	FTimerDelegate DescriptionTimerDelegate;
-	DescriptionTimerDelegate.BindLambda([this, &Manifest, &DescriptionWidget]()
+	DescriptionTimerDelegate.BindLambda([this, &Manifest, DescriptionWidget]()
 		{
-			//don't detect any mouse click hits
-			GetOrCreateItemDescription()->SetVisibility(ESlateVisibility::HitTestInvisible);
-		
-			// Assimilate the manifest into the Item Description widget
+			//Assimilate the manifest into the Item Description widget
 			Manifest.AssimilateInventoryFragments(DescriptionWidget);
+
+			//Don't detect any mouse click hits
+			GetOrCreateItemDescription()->SetVisibility(ESlateVisibility::HitTestInvisible);
 		}
 	);
 	
@@ -616,7 +616,6 @@ void UInv_InventoryGrid::SetSlottedItemImage(const UInv_SlottedItem* SlottedItem
 	Brush.SetResourceObject(ImageFragment->GetIcon());
 	Brush.DrawAs = ESlateBrushDrawType::Image;
 	Brush.ImageSize = GetDrawSize(GridFragment);
-	
 	SlottedItem->SetImageBrush(Brush);
 }
 

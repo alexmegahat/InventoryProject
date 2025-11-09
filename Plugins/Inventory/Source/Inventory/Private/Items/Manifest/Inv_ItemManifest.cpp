@@ -9,6 +9,11 @@ UInv_InventoryItem* FInv_ItemManifest::Manifest(UObject* NewOuter)
 {
 	UInv_InventoryItem* Item = NewObject<UInv_InventoryItem>(NewOuter, UInv_InventoryItem::StaticClass());
 	Item->SetItemManifest(*this);
+	for (auto& Fragment : Item->GetItemManifestMutable().GetFragmentsMutable())
+	{
+		Fragment.GetMutable().Manifest();
+	}
+	ClearFragments();
 
 	return Item;
 }
@@ -24,4 +29,13 @@ void FInv_ItemManifest::AssimilateInventoryFragments(UInv_CompositeBase* Composi
 			}
 		);
 	}
+}
+
+void FInv_ItemManifest::ClearFragments()
+{
+	for (auto& Fragment : Fragments)
+	{
+		Fragment.Reset();
+	}
+	Fragments.Empty();
 }

@@ -15,7 +15,7 @@ void UInv_Leaf_LabeledValue::NativePreConstruct()
 
 	FSlateFontInfo FontInfo_Value = Text_Value->GetFont();
 	FontInfo_Value.Size = FontSize_Value;
-	Text_Label->SetFont(FontInfo_Value);
+	Text_Value->SetFont(FontInfo_Value);
 }
 
 void UInv_Leaf_LabeledValue::SetText_Label(const FText& NewText, bool bCollapse) const

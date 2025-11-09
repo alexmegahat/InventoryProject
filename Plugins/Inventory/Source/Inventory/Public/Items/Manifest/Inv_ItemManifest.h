@@ -21,6 +21,9 @@ struct INVENTORY_API FInv_ItemManifest
 {
 	GENERATED_BODY()
 
+	TArray<TInstancedStruct<FInv_ItemFragment>>& GetFragmentsMutable() { return Fragments; }
+
+	// Called when we're picking up an item of this type for the first time
 	UInv_InventoryItem* Manifest(UObject* NewOuter);
 
 	EInv_ItemCategory GetItemCategory() const { return ItemCategory; }
@@ -58,9 +61,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	TSubclassOf<AActor> DropActorClass{nullptr};
 	
-
 	UPROPERTY(EditAnywhere, Category = "Inventory", meta=(Categories = "GameItems")) //Categories specify the "GameItems" tag
 	FGameplayTag ItemType;
+
+	void ClearFragments();
 };
 
 template <typename FragmentType>

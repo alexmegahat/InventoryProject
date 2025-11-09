@@ -40,6 +40,8 @@ struct FInv_ItemFragment
 
 	
 	FGameplayTag GetFragmentTag() const { return FragmentTag; }
+
+	virtual void Manifest() {};
 	
 protected:
 	UPROPERTY(EditAnywhere, Category = "Inventory", meta = (Categories = "FragmentTags")) //Categories specify the "FragmentTags" tag
@@ -131,6 +133,52 @@ public:
 private:
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	FText FragmentText;
+	
+};
+
+/*
+* Labeled Number Item Fragment
+*/
+USTRUCT(BlueprintType)
+struct FInv_LabeledNumberFragment : public FInv_InventoryItemFragment
+{
+	GENERATED_BODY()
+public:
+	//default constructor for this fragment (NOT setting up tag here, done in bp)
+	FInv_LabeledNumberFragment() {}
+
+	virtual void Manifest() override;
+
+	// When manifesting for the first time this fragment will randomize, but once equipped and dropped the item should
+	// retain the same value, and randomization should not occur.
+	bool bRandomizeOnManifest = true;
+
+	virtual void Assimilate(UInv_CompositeBase* Composite) const override;
+	
+private:
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	FText Text_Label{};
+
+	UPROPERTY(VisibleAnywhere, Category = "Inventory")
+	float Value = 0.f;
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	float MinValue = 0.f;
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	float MaxValue = 0.f;
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	bool bCollapseLabel = false;
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	bool bCollapseValue = false;
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	int32 MinFractionalDigits = 1;
+	
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	int32 MaxFractionalDigits = 1;
 	
 };
 

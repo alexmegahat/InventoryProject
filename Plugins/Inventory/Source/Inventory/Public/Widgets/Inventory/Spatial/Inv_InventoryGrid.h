@@ -47,6 +47,7 @@ public:
 	void FillInStack(const int32 FillAmount, const int32 Remainder, const int32 Index);
 
 	bool HasHoverItem() const;
+	UInv_HoverItem* GetHoverItem() const;
 	UInv_ItemDescription* GetOrCreateItemDescription();
 	void SetItemDescriptionSizeAndPosition(UInv_ItemDescription* Description, UCanvasPanel* Canvas) const;
 	

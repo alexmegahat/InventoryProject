@@ -5,6 +5,7 @@
 
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
 #include "Items/Components/Inv_ItemComponent.h"
+#include "Widgets/Inventory/InventoryBase/Inv_InventoryBase.h"
 
 UInv_InventoryComponent* UInv_InventoryStatics::GetInventoryComponent(const APlayerController* PlayerController)
 {
@@ -19,4 +20,15 @@ EInv_ItemCategory UInv_InventoryStatics::GetItemCategoryFromItemComponent(const 
 	if (!IsValid(ItemComponent)) return EInv_ItemCategory::None;
 	
 	return ItemComponent->GetItemManifest().GetItemCategory();
+}
+
+UInv_HoverItem* UInv_InventoryStatics::GetHoverItem(APlayerController* PC)
+{
+	UInv_InventoryComponent* IC = GetInventoryComponent(PC);
+	if (!IsValid(IC)) return nullptr;
+
+	UInv_InventoryBase* InventoryBase = IC->GetInventoryMenu();
+	if (!IsValid(InventoryBase)) return nullptr;
+
+	return InventoryBase->GetHoverItem();
 }

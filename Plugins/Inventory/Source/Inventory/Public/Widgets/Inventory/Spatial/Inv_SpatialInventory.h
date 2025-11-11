@@ -6,6 +6,8 @@
 #include "Widgets/Inventory/InventoryBase/Inv_InventoryBase.h"
 #include "Inv_SpatialInventory.generated.h"
 
+struct FGameplayTag;
+class UInv_EquippedGridSlot;
 class UCanvasPanel;
 class UButton;
 class UWidgetSwitcher;
@@ -25,6 +27,8 @@ public:
 
 	//~Begin UInv_InventoryBase Interface
 	virtual FInv_SlotAvailabilityResult HasRoomForItem(UInv_ItemComponent* ItemComponent) const override;
+	virtual UInv_HoverItem* GetHoverItem() const override;
+	
 	//virtual void OnItemHovered(UInv_InventoryItem* Item) override;
 	//virtual void OnItemUnhovered() override;
 	//virtual bool HasHoverItem() const override;
@@ -34,6 +38,10 @@ private:
 	//******* Bound Widgets *******//
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCanvasPanel> CanvasPanel;
+
+	//Added in NativeOnInitialized
+	UPROPERTY()
+	TArray<TObjectPtr<UInv_EquippedGridSlot>> EquippedGridSlots;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UWidgetSwitcher> Switcher;
@@ -63,6 +71,9 @@ private:
 	void ShowCraftables();
 	UFUNCTION()
 	void ShowConsumables();
+
+	UFUNCTION()
+	void EquippedGridSlotClicked(UInv_EquippedGridSlot* EquippedGridSlot, const FGameplayTag& EquippedTypeTag);
 
 	TWeakObjectPtr<UInv_InventoryGrid> ActiveGrid;
 

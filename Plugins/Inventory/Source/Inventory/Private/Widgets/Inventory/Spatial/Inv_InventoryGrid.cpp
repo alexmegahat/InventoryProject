@@ -138,6 +138,12 @@ bool UInv_InventoryGrid::HasHoverItem() const
 	return IsValid(HoverItem);
 }
 
+UInv_HoverItem* UInv_InventoryGrid::GetHoverItem() const
+{
+	if (HasHoverItem()) return HoverItem;
+	else return nullptr;
+}
+
 UInv_ItemDescription* UInv_InventoryGrid::GetOrCreateItemDescription()
 {
 	if (!IsValid(ItemDescription) && IsValid(ItemDescriptionClass))

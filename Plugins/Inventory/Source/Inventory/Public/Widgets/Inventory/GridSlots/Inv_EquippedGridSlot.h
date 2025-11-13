@@ -39,6 +39,8 @@ public:
 
 	FGameplayTag& GetEquipmentTypeTag() { return EquipmentTypeTag; }
 
+	void SetEquippedSlottedItem(UInv_EquippedSlottedItem* NewSlottedItem) { EquippedSlottedItem = NewSlottedItem; };
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Inventory", meta = (Categories = "GameItems.Equipment"))
 	FGameplayTag EquipmentTypeTag;

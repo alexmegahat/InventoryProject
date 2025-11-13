@@ -40,6 +40,8 @@ public:
 	bool CanEquipHoverItem(UInv_EquippedGridSlot* EquippedGridSlot, const FGameplayTag& EquipmentTypeTag) const;
 	
 private:
+
+	TWeakObjectPtr<UInv_InventoryGrid> ActiveGrid;
 	
 	//******* Bound Widgets *******//
 	UPROPERTY(meta = (BindWidget))
@@ -84,7 +86,13 @@ private:
 	UFUNCTION()
 	void EquippedSlottedItemClicked(UInv_EquippedSlottedItem* EquippedSlottedItem);
 
-	TWeakObjectPtr<UInv_InventoryGrid> ActiveGrid;
+	void ClearSlotOfItem(UInv_EquippedGridSlot* EquippedGridSlot);
+	void RemoveEquippedSlottedItem(UInv_EquippedSlottedItem* EquippedSlottedItem);
 
 	void SetActiveGrid(UInv_InventoryGrid* Grid, UButton* DisableButton);
+
+	//Create new equipped slotted item for this equipped grid slot
+	void MakeEquippedSlottedItem(UInv_EquippedSlottedItem* EquippedSlottedItem, UInv_EquippedGridSlot* EquippedGridSlot, UInv_InventoryItem* ItemToEquip);
+
+	UInv_EquippedGridSlot* FindSlotWithEquippedItem(UInv_InventoryItem* EquippedItem);
 };

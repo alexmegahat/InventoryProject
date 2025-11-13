@@ -81,6 +81,16 @@ public:
 
 	//Drop the current hover item.
 	void DropItem();
+
+	UFUNCTION()
+	void OnSlottedItemHovered(UInv_InventoryItem* Item);
+	
+	UFUNCTION()
+	void OnSlottedItemUnhovered();
+
+	void AssignHoverItem(UInv_InventoryItem* InventoryItem);
+	void AssignHoverItem(UInv_InventoryItem* InventoryItem, const int32 GridIndex, const int32 PreviousGridIndex);
+	
 private:
 	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
 	TWeakObjectPtr<UCanvasPanel> OwningCanvasPanel;
@@ -99,16 +109,10 @@ private:
 	void AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* NewItem);
 	void AddItemAtIndex(UInv_InventoryItem* Item, const int32 Index, const bool bStackable, const int32 StackAmount);
 
-	UFUNCTION()
-	void OnSlottedItemHovered(UInv_InventoryItem* Item);
-
 	FTimerHandle Description_Timer;
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	float DescriptionTimerDelay = 0.5f;
-	
-	UFUNCTION()
-	void OnSlottedItemUnhovered();
 	
 	//create widget to add to the grid and set its properties
 	UInv_SlottedItem* CreateSlottedItem(
@@ -190,8 +194,6 @@ private:
 
 	//On item clicked with left mouse button - Assign the hover item and remove the slotted item from the grid
 	void PickUp(UInv_InventoryItem* ClickedInventoryItem, const int32 GridIndex);
-	void AssignHoverItem(UInv_InventoryItem* InventoryItem);
-	void AssignHoverItem(UInv_InventoryItem* InventoryItem, const int32 GridIndex, const int32 PreviousGridIndex);
 	void RemoveItemFromGrid(UInv_InventoryItem* InventoryItem, const int32 GridIndex);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Inventory")

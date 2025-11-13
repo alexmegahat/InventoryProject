@@ -7,6 +7,7 @@
 #include "Inv_GridSlot.h"
 #include "Inv_EquippedGridSlot.generated.h"
 
+class UInv_EquippedSlottedItem;
 class UImage;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnEquippedGridSlotClicked, UInv_EquippedGridSlot*, GridSlot, const FGameplayTag&, EquipmentTypeTag);
@@ -30,6 +31,9 @@ public:
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	//~End UInv_GridSlot Interface
 
+	//called in spatial inventory in EquippedGridSlotClicked.
+	UInv_EquippedSlottedItem* OnItemEquipped(UInv_InventoryItem* Item, const FGameplayTag& EquipmentTag, float TileSize);
+
 	FOnEquippedGridSlotClicked OnEquippedGridSlotClicked;
 
 	FGameplayTag& GetEquipmentTypeTag() { return EquipmentTypeTag; }
@@ -41,6 +45,12 @@ private:
 	// Brush for the grayed out icon, can be set on an instance of this equipped grid slot
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	FSlateBrush Brush_GrayedOutIcon;
+
+	UPROPERTY()
+	TObjectPtr<UInv_EquippedSlottedItem> EquippedSlottedItem;
+	
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TSubclassOf<UInv_EquippedSlottedItem> EquippedSlottedItemClass;
 
 	//******* Bound Widgets *******//
 

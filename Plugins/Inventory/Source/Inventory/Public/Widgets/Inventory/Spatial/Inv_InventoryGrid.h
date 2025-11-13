@@ -53,6 +53,8 @@ public:
 	
 	void SetMouseCursorWidgetByVisibilityType(const EInv_MouseCursorVisibilityType& MouseCursor);
 
+	float GetTileSize() const { return TileSize; };
+
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	TMap<EInv_MouseCursorVisibilityType, TSubclassOf<UUserWidget>> MouseCursorWidgetClassMap;
 	

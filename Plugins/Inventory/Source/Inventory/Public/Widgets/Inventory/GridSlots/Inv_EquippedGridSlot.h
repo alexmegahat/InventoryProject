@@ -7,6 +7,7 @@
 #include "Inv_GridSlot.h"
 #include "Inv_EquippedGridSlot.generated.h"
 
+class UOverlay;
 class UInv_EquippedSlottedItem;
 class UImage;
 
@@ -58,6 +59,8 @@ private:
 	// Only visible when there is no equipment item placed there. 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> Image_GrayedOutIcon;
-	
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UOverlay> Overlay_Root;
 	//******* Bound Widgets *******//
 };

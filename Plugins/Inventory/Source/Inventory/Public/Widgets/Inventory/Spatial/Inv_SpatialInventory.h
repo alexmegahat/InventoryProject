@@ -6,6 +6,7 @@
 #include "Widgets/Inventory/InventoryBase/Inv_InventoryBase.h"
 #include "Inv_SpatialInventory.generated.h"
 
+class UInv_ItemDescription;
 class UInv_EquippedSlottedItem;
 struct FGameplayTag;
 class UInv_EquippedGridSlot;
@@ -24,6 +25,9 @@ public:
 	//~Begin UUserWidget Interface
 	virtual void NativeOnInitialized() override;
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& MyGeometry, const FPointerEvent& MouseEvent) override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
+	UInv_ItemDescription* GetOrCreateItemDescription();
+	void SetItemDescriptionSizeAndPosition(UInv_ItemDescription* Description, UCanvasPanel* Canvas) const;
 	//~End UUserWidget Interface
 
 	//~Begin UInv_InventoryBase Interface
@@ -31,6 +35,11 @@ public:
 	virtual bool HasHoverItem() const override;
 	virtual UInv_HoverItem* GetHoverItem() const override;
 	virtual float GetTileSize() const override;
+	
+	UFUNCTION()
+	virtual void OnSlottedItemHovered(UInv_InventoryItem* Item) override;
+	UFUNCTION()
+	virtual void OnSlottedItemUnhovered() override;
 	
 	//virtual void OnItemHovered(UInv_InventoryItem* Item) override;
 	//virtual void OnItemUnhovered() override;
@@ -42,6 +51,17 @@ public:
 private:
 
 	TWeakObjectPtr<UInv_InventoryGrid> ActiveGrid;
+
+	UPROPERTY()
+	TObjectPtr<UInv_ItemDescription> ItemDescription;
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TSubclassOf<UInv_ItemDescription> ItemDescriptionClass;
+
+	FTimerHandle Description_Timer;
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	float DescriptionTimerDelay = 0.5f;
 	
 	//******* Bound Widgets *******//
 	UPROPERTY(meta = (BindWidget))

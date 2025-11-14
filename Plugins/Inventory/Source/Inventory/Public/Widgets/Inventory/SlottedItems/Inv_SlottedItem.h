@@ -20,8 +20,8 @@ class UTextBlock;
 //delegate to subscribe to in the inventory grid, when we need to determine what item has been clicked to move it around in the inventory.
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSlottedItemClicked, int32, GridIndex, const FPointerEvent&, MouseEvent);
 
-DECLARE_DYNAMIC_DELEGATE_OneParam(FSlottedItemHovered, UInv_InventoryItem*, Item);
-DECLARE_DYNAMIC_DELEGATE(FSlottedItemUnhovered);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSlottedItemHovered, UInv_InventoryItem*, Item);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSlottedItemUnhovered);
 
 /**
  * Widget that gets displayed as an item in the inventory.

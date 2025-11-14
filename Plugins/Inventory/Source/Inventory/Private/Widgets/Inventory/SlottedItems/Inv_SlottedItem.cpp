@@ -16,14 +16,14 @@ void UInv_SlottedItem::NativeOnMouseEnter(const FGeometry& InGeometry, const FPo
 {
 	Super::NativeOnMouseEnter(InGeometry, InMouseEvent);
 	
-	OnSlottedItemHovered.ExecuteIfBound(InventoryItem.Get());
+	OnSlottedItemHovered.Broadcast(InventoryItem.Get());
 }
 
 void UInv_SlottedItem::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
 {
 	Super::NativeOnMouseLeave(InMouseEvent);
 
-	OnSlottedItemUnhovered.ExecuteIfBound();
+	OnSlottedItemUnhovered.Broadcast();
 }
 
 void UInv_SlottedItem::SetInventoryItem(UInv_InventoryItem* Item)

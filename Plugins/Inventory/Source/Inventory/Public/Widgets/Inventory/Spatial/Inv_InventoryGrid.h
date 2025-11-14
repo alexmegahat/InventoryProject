@@ -57,9 +57,6 @@ public:
 
 	void PutHoverItemBack();
 	
-	UInv_ItemDescription* GetOrCreateItemDescription();
-	void SetItemDescriptionSizeAndPosition(UInv_ItemDescription* Description, UCanvasPanel* Canvas) const;
-	
 	void SetMouseCursorWidgetByVisibilityType(const EInv_MouseCursorVisibilityType& MouseCursor);
 
 	float GetTileSize() const { return TileSize; };
@@ -89,14 +86,13 @@ public:
 	//Drop the current hover item.
 	void DropItem();
 
-	UFUNCTION()
-	void OnSlottedItemHovered(UInv_InventoryItem* Item);
-	
-	UFUNCTION()
-	void OnSlottedItemUnhovered();
-
 	void AssignHoverItem(UInv_InventoryItem* InventoryItem);
 	void AssignHoverItem(UInv_InventoryItem* InventoryItem, const int32 GridIndex, const int32 PreviousGridIndex);
+
+	UFUNCTION()
+	void OnSlottedItemHovered(UInv_InventoryItem* Item);
+	UFUNCTION()
+	void OnSlottedItemUnhovered();
 	
 private:
 	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
@@ -115,11 +111,6 @@ private:
 
 	void AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* NewItem);
 	void AddItemAtIndex(UInv_InventoryItem* Item, const int32 Index, const bool bStackable, const int32 StackAmount);
-
-	FTimerHandle Description_Timer;
-
-	UPROPERTY(EditAnywhere, Category = "Inventory")
-	float DescriptionTimerDelay = 0.5f;
 	
 	//create widget to add to the grid and set its properties
 	UInv_SlottedItem* CreateSlottedItem(
@@ -216,12 +207,6 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	TSubclassOf<UInv_ItemPopUp> ItemPopupClass;
-
-	UPROPERTY()
-	TObjectPtr<UInv_ItemDescription> ItemDescription;
-
-	UPROPERTY(EditAnywhere, Category = "Inventory")
-	TSubclassOf<UInv_ItemDescription> ItemDescriptionClass;
 
 	//These store information about the position of the mouse within the grid
 	//(Specific slot, specific position within this slot)

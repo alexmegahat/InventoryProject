@@ -328,7 +328,8 @@ public:
 	AInv_EquipActor* SpawnAttachedActor(USkeletalMeshComponent* AttachMesh) const;
 	void DestroyAttachedActor() const;
 
-	FGameplayTag GetEquipmentType() const { return EquipmentType; }
+	FGameplayTag GetEquipmentType() const { return EquipmentType; };
+	
 	void SetEquippedActor(AInv_EquipActor* EquipActor);
 
 	//~Begin FInv_ItemFragment Interface

@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "Inv_EquipmentComponent.generated.h"
 
+struct FGameplayTag;
 struct FInv_EquipmentFragment;
 struct FInv_ItemManifest;
 class AInv_EquipActor;
@@ -31,8 +32,13 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	
 	//called in OnBeginPlay
+	void InitPlayerController();
 	void InitInventoryComponent();
+	
+	UFUNCTION()
+	void OnPossessedPawnChange(APawn* OldPawn, APawn* NewPawn);
 	
 	TWeakObjectPtr<APlayerController> OwningPlayerController;
 
@@ -50,6 +56,7 @@ private:
 
 	AInv_EquipActor* SpawnEquipActor(FInv_EquipmentFragment* EquipmentFragment, const FInv_ItemManifest& Manifest, USkeletalMeshComponent* AttachMesh);
 	
+	AInv_EquipActor* FindEquippedActorByTag(const FGameplayTag& InGameplayTag);
 	
 	
 };

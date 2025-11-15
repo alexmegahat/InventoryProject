@@ -17,7 +17,7 @@ public:
 	// Sets default values for this actor's properties
 	AInv_EquipActor();
 
-	FGameplayTag GetEquipmentTag() { return EquipmentType; };
+	FGameplayTag GetEquipmentType() { return EquipmentType; };
 	void SetEquipmentType(FGameplayTag InEquipmentType) { EquipmentType = InEquipmentType; };
 
 private:

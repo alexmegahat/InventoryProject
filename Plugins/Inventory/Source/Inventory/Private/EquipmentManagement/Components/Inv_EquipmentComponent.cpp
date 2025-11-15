@@ -16,9 +16,12 @@ void UInv_EquipmentComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	OwningPlayerController = Cast<APlayerController>(GetOwner());
-	
-	if (OwningPlayerController.IsValid())
+	InitPlayerController();
+}
+
+void UInv_EquipmentComponent::InitPlayerController()
+{
+	if (OwningPlayerController = Cast<APlayerController>(GetOwner()); OwningPlayerController.IsValid())
 	{
 		if (ACharacter* PlayerPawn = Cast<ACharacter>(OwningPlayerController->GetPawn()); IsValid(PlayerPawn))
 		{
@@ -26,6 +29,20 @@ void UInv_EquipmentComponent::BeginPlay()
 			
 			InitInventoryComponent();
 		}
+		else
+		{
+			OwningPlayerController->OnPossessedPawnChanged.AddDynamic(this, &ThisClass::OnPossessedPawnChange); //this is called in case of multiplayer
+		}
+	}
+}
+
+void UInv_EquipmentComponent::OnPossessedPawnChange(APawn* OldPawn, APawn* NewPawn)
+{
+	if (ACharacter* PlayerPawn = Cast<ACharacter>(OwningPlayerController->GetPawn()); IsValid(PlayerPawn))
+	{
+		OwningSkeletalMesh = PlayerPawn->GetMesh();
+			
+		InitInventoryComponent();
 	}
 }
 
@@ -40,12 +57,17 @@ void UInv_EquipmentComponent::OnItemEquipped(UInv_InventoryItem* EquippedItem)
 	FInv_EquipmentFragment* EquipmentFragment = ItemManifest.GetFragmentOfTypeMutable<FInv_EquipmentFragment>();
 	if (!EquipmentFragment) return;
 
+	//First call OnEquip on EquipmentFragment (apply effect)
 	EquipmentFragment->OnEquip(OwningPlayerController.Get());
-	
-	if (!OwningSkeletalMesh.IsValid()) return;
-	AInv_EquipActor* SpawnedEquipActor = SpawnEquipActor(EquipmentFragment, ItemManifest, OwningSkeletalMesh.Get());
 
-	EquippedActors.Add(SpawnedEquipActor);
+	//Second call SpawnAttachedActor on EquipmentFragment and store SpawnedEquipActor (show visual representation of the equippable in the world)
+	if (OwningSkeletalMesh.IsValid())
+	{
+		AInv_EquipActor* SpawnedEquipActor = SpawnEquipActor(EquipmentFragment, ItemManifest, OwningSkeletalMesh.Get());
+		
+		EquippedActors.Add(SpawnedEquipActor);
+	}
+	
 }
 
 void UInv_EquipmentComponent::OnItemUnequipped(UInv_InventoryItem* UnequippedItem)
@@ -59,7 +81,18 @@ void UInv_EquipmentComponent::OnItemUnequipped(UInv_InventoryItem* UnequippedIte
 	FInv_EquipmentFragment* EquipmentFragment = ItemManifest.GetFragmentOfTypeMutable<FInv_EquipmentFragment>();
 	if (!EquipmentFragment) return;
 
+	//First call OnUnequip on EquipmentFragment (remove applied effect)
 	EquipmentFragment->OnUnequip(OwningPlayerController.Get());
+
+	//Second call DestroyEquipActor on EquipmentFragment and remove SpawnedEquipActor from the array (remove visual representation of the equippable in the world)
+	if (AInv_EquipActor* EquippedActor = FindEquippedActorByTag(EquipmentFragment->GetEquipmentType()); IsValid(EquippedActor))
+	{
+		EquippedActors.Remove(EquippedActor);
+		
+		EquippedActor->Destroy();
+		
+		//EquipmentFragment->DestroyAttachedActor();
+	}
 }
 
 AInv_EquipActor* UInv_EquipmentComponent::SpawnEquipActor(FInv_EquipmentFragment* EquipmentFragment,
@@ -71,6 +104,17 @@ AInv_EquipActor* UInv_EquipmentComponent::SpawnEquipActor(FInv_EquipmentFragment
 	EquipmentFragment->SetEquippedActor(SpawnedEquipActor);
 
 	return SpawnedEquipActor;
+}
+
+AInv_EquipActor* UInv_EquipmentComponent::FindEquippedActorByTag(const FGameplayTag& InGameplayTag)
+{
+	auto* FoundEquipActor = EquippedActors.FindByPredicate([&InGameplayTag](AInv_EquipActor* EquippedActor)
+		{
+			return EquippedActor->GetEquipmentType().MatchesTagExact(InGameplayTag);
+		}
+	);
+	
+	return FoundEquipActor ? *FoundEquipActor : nullptr;
 }
 
 void UInv_EquipmentComponent::InitInventoryComponent()

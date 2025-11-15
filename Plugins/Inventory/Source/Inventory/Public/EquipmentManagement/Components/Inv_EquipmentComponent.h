@@ -26,6 +26,10 @@ class INVENTORY_API UInv_EquipmentComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	//called only on the proxy mesh (actor, created specifically for inventory)
+	//because setting owning skeletal mesh in OnBeginPlay/in Init functions will fail.
+	void SetOwningSkeletalMesh(USkeletalMeshComponent* InSkeletalMesh);
+	void SetIsProxy(const bool InIsProxy) { bIsProxy = InIsProxy; }
 
 protected:
 	// Called when the game starts
@@ -58,5 +62,5 @@ private:
 	
 	AInv_EquipActor* FindEquippedActorByTag(const FGameplayTag& InGameplayTag);
 	
-	
+	bool bIsProxy = false;
 };
